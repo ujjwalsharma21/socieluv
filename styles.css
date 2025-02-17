@@ -1,9 +1,10 @@
 :root {
-    --bg-primary: #0a0a1a;
+    --bg-primary: #000000;
     --accent-color: #00ffff;
     --secondary-color: #ff00ff;
     --text-primary: #ffffff;
-    --text-secondary: #00ffff;
+    --text-secondary: #ffffff;
+    --overlay-color: rgba(255,255,255,0.2);
 }
 
 * {
@@ -21,6 +22,18 @@ body, html {
     perspective: 1000px;
 }
 
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 1;
+    object-fit: cover;
+    filter: brightness(0.8) contrast(1.1);
+}
+
 .app-container {
     position: relative;
     width: 100%;
@@ -29,6 +42,7 @@ body, html {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background-color: var(--overlay-color);
 }
 
 .tech-grid {
@@ -38,11 +52,11 @@ body, html {
     width: 100%;
     height: 100%;
     background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(0,255,255,0.05) 25%, rgba(0,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,255,255,0.05) 75%, rgba(0,255,255,0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(0,255,255,0.05) 25%, rgba(0,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,255,255,0.05) 75%, rgba(0,255,255,0.05) 76%, transparent 77%, transparent);
+        linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
     background-size: 50px 50px;
-    z-index: 1;
-    opacity: 0.3;
+    z-index: 2;
+    opacity: 0.1;
 }
 
 .holographic-overlay {
@@ -53,27 +67,31 @@ body, html {
     height: 100%;
     background: radial-gradient(
         circle at center, 
-        rgba(0,255,255,0.1), 
-        rgba(255,0,255,0.1) 50%, 
+        rgba(255,255,255,0.1), 
+        rgba(255,255,255,0.1) 50%, 
         transparent 70%
     );
-    z-index: 2;
+    z-index: 3;
     pointer-events: none;
+    opacity: 0.1;
 }
 
 .main-content {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 800px;
+    max-width: 500px;
     text-align: center;
     padding: 20px;
     transform-style: preserve-3d;
     transform: rotateX(10deg);
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
 }
 
 .header {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .logo-container {
@@ -83,37 +101,35 @@ body, html {
 }
 
 .logo-text {
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 700;
-    background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(0,255,255,0.5);
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 .logo-subtext {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
+    font-size: 1rem;
+    color: var(--text-primary);
     letter-spacing: 3px;
     text-transform: uppercase;
 }
 
 .countdown-wrapper {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .countdown-grid {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 .countdown-block {
-    background: rgba(0,0,0,0.5);
+    background: #000000;
     border: 2px solid var(--accent-color);
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
-    min-width: 120px;
+    min-width: 100px;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
 }
@@ -124,14 +140,15 @@ body, html {
 }
 
 .countdown-block .number {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: bold;
-    color: var(--accent-color);
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 .countdown-block .label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    font-size: 0.7rem;
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -140,52 +157,62 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: 25px;
 }
 
 .input-container {
     display: flex;
     width: 100%;
-    max-width: 500px;
+    max-width: 500px; /* Increased from 400px */
     gap: 10px;
 }
 
 .email-input {
     flex-grow: 1;
-    padding: 15px;
-    background: rgba(255,255,255,0.1);
+    padding: 15px; /* Slightly increased padding */
+    background: #000000;
     border: 2px solid var(--accent-color);
     color: var(--text-primary);
     border-radius: 5px;
     transition: all 0.3s ease;
+    font-size: 0.9rem; /* Added font size for better readability */
+}
+
+.email-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px var(--accent-color);
 }
 
 .submit-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px 25px;
+    gap: 5px; /* Reduced gap */
+    padding: 10px 15px; /* Reduced padding */
     background: var(--accent-color);
-    color: var(--bg-primary);
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 0.8rem; /* Reduced font size */
 }
 
 .submit-btn:hover {
     transform: scale(1.05) rotate(5deg);
-    box-shadow: 0 0 20px rgba(0,255,255,0.5);
+    box-shadow: 0 0 20px rgba(0,255,255,0.7);
 }
 
 .social-connect {
     display: flex;
-    gap: 30px;
+    gap: 25px;
 }
 
 .social-icon {
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     transition: all 0.3s ease;
 }
 
@@ -195,44 +222,30 @@ body, html {
 }
 
 .footer {
-    margin-top: 40px;
-    font-size: 1.2rem; /* Increased from 0.9rem */
+    margin-top: 30px;
+    font-size: 1rem;
 }
 
 .xcentic-link {
-    color: var(--accent-color);
+    color: var(--text-primary);
     text-decoration: none;
-    transition: color 0.3s ease;
-    font-size: 1rem; /* Increased font size */
-    font-weight: 700; /* Added bold weight */
-    background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(0,255,255,0.3);
+    transition: all 0.3s ease;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px ;
+    letter-spacing: 2px;
 }
 
 .xcentic-link:hover {
-    color: var(--secondary-color);
+    color: var(--accent-color);
     text-decoration: underline;
     transform: scale(1.05);
-}
-
-#particle-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    pointer-events: none;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {
-        padding: 10px;
+        padding: 15px;
+        margin: 0 15px;
     }
 
     .logo-text {
@@ -245,7 +258,7 @@ body, html {
     }
 
     .countdown-block {
-        min-width: 80px;
+        min-width: 70px;
         padding: 10px;
     }
 
@@ -254,10 +267,6 @@ body, html {
     }
 
     .footer {
-        font-size: 1rem;
-    }
-
-    .xcentic-link {
-        font-size: 1.2rem;
+        font-size: 0.9rem;
     }
 }
