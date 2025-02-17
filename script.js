@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const backgroundImage = new Image();
         
         // IMPORTANT: Set the source of the image (replace with your actual image path)
-        backgroundImage.src = 'images/background.jpg';
+        backgroundImage.src = 'background.jpg';
 
         // Resize canvas to window
         backgroundCanvas.width = window.innerWidth;
