@@ -49,67 +49,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }, stepTime);
     }
 
-    // Particle System
-    function initParticleSystem() {
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    // Background Image Setup
+    function setupBackgroundImage() {
+        const backgroundCanvas = document.getElementById('particle-canvas');
+        const ctx = backgroundCanvas.getContext('2d');
 
-        class Particle {
-            constructor() {
-                this.reset();
-            }
+        // Create a new Image object
+        const backgroundImage = new Image();
+        
+        // IMPORTANT: Set the source of the image (replace with your actual image path)
+        backgroundImage.src = 'images/background.jpg';
 
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.radius = Math.random() * 2 + 1;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.speedY = (Math.random() - 0.5) * 2;
-                this.color = `hsla(${Math.random() * 360}, 100%, 50%, ${Math.random() * 0.5})`;
-            }
+        // Resize canvas to window
+        backgroundCanvas.width = window.innerWidth;
+        backgroundCanvas.height = window.innerHeight;
 
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
+        // Draw image when it loads
+        backgroundImage.onload = () => {
+            // Scale image to cover entire canvas while maintaining aspect ratio
+            const scale = Math.max(
+                backgroundCanvas.width / backgroundImage.width, 
+                backgroundCanvas.height / backgroundImage.height
+            );
 
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-            }
+            const scaledWidth = backgroundImage.width * scale;
+            const scaledHeight = backgroundImage.height * scale;
 
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.closePath();
-            }
-        }
+            const centerX = (backgroundCanvas.width - scaledWidth) / 2;
+            const centerY = (backgroundCanvas.height - scaledHeight) / 2;
 
-        const particlesArray = [];
-        const particleCount = 200;
+            // Draw the image
+            ctx.drawImage(
+                backgroundImage, 
+                centerX, 
+                centerY, 
+                scaledWidth, 
+                scaledHeight
+            );
+        };
 
-        for (let i = 0; i < particleCount; i++) {
-            particlesArray.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particlesArray.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
+        // Resize handler
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            backgroundCanvas.width = window.innerWidth;
+            backgroundCanvas.height = window.innerHeight;
+            
+            // Redraw image on resize
+            if (backgroundImage.complete) {
+                const scale = Math.max(
+                    backgroundCanvas.width / backgroundImage.width, 
+                    backgroundCanvas.height / backgroundImage.height
+                );
+
+                const scaledWidth = backgroundImage.width * scale;
+                const scaledHeight = backgroundImage.height * scale;
+
+                const centerX = (backgroundCanvas.width - scaledWidth) / 2;
+                const centerY = (backgroundCanvas.height - scaledHeight) / 2;
+
+                ctx.drawImage(
+                    backgroundImage, 
+                    centerX, 
+                    centerY, 
+                    scaledWidth, 
+                    scaledHeight
+                );
+            }
         });
     }
 
@@ -151,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        initParticleSystem();
+        setupBackgroundImage(); // Replace particle system with background image
         setupEmailSubmission();
     }
 
