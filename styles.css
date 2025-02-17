@@ -246,7 +246,10 @@ body, html {
     .main-content {
         padding: 15px;
         margin: 0 15px;
+        transform: translateY(-15%);
+        background-color: rgba(0,0,0,0.3);
     }
+    
 
     .logo-text {
         font-size: 2.5rem;

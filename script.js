@@ -54,67 +54,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const backgroundCanvas = document.getElementById('particle-canvas');
         const ctx = backgroundCanvas.getContext('2d');
 
-        // Create a new Image object
-        const backgroundImage = new Image();
+        // Create image objects
+        const desktopBackgroundImage = new Image();
+        const mobileBackgroundImage = new Image();
         
-        // IMPORTANT: Set the source of the image (replace with your actual image path)
-        backgroundImage.src = 'background.jpg';
+        // Set image sources
+        desktopBackgroundImage.src = 'background.jpg';
+        mobileBackgroundImage.src = 'mobile.jpg';
 
         // Resize canvas to window
-        backgroundCanvas.width = window.innerWidth;
-        backgroundCanvas.height = window.innerHeight;
+        function resizeCanvas() {
+            backgroundCanvas.width = window.innerWidth;
+            backgroundCanvas.height = window.innerHeight;
+        }
 
-        // Draw image when it loads
-        backgroundImage.onload = () => {
+        // Draw image function
+        function drawImage(image) {
             // Scale image to cover entire canvas while maintaining aspect ratio
             const scale = Math.max(
-                backgroundCanvas.width / backgroundImage.width, 
-                backgroundCanvas.height / backgroundImage.height
+                backgroundCanvas.width / image.width, 
+                backgroundCanvas.height / image.height
             );
 
-            const scaledWidth = backgroundImage.width * scale;
-            const scaledHeight = backgroundImage.height * scale;
+            const scaledWidth = image.width * scale;
+            const scaledHeight = image.height * scale;
 
             const centerX = (backgroundCanvas.width - scaledWidth) / 2;
             const centerY = (backgroundCanvas.height - scaledHeight) / 2;
 
+            // Clear previous drawing
+            ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+
             // Draw the image
             ctx.drawImage(
-                backgroundImage, 
+                image, 
                 centerX, 
                 centerY, 
                 scaledWidth, 
                 scaledHeight
             );
-        };
+        }
 
-        // Resize handler
-        window.addEventListener('resize', () => {
-            backgroundCanvas.width = window.innerWidth;
-            backgroundCanvas.height = window.innerHeight;
+        // Determine which image to use
+        function selectAndDrawImage() {
+            resizeCanvas();
             
-            // Redraw image on resize
-            if (backgroundImage.complete) {
-                const scale = Math.max(
-                    backgroundCanvas.width / backgroundImage.width, 
-                    backgroundCanvas.height / backgroundImage.height
-                );
-
-                const scaledWidth = backgroundImage.width * scale;
-                const scaledHeight = backgroundImage.height * scale;
-
-                const centerX = (backgroundCanvas.width - scaledWidth) / 2;
-                const centerY = (backgroundCanvas.height - scaledHeight) / 2;
-
-                ctx.drawImage(
-                    backgroundImage, 
-                    centerX, 
-                    centerY, 
-                    scaledWidth, 
-                    scaledHeight
-                );
+            // Specific mobile screen width breakpoint
+            const isMobile = window.innerWidth <= 768;
+            
+            const imageToUse = isMobile ? mobileBackgroundImage : desktopBackgroundImage;
+            
+            // Wait for image to load before drawing
+            if (imageToUse.complete) {
+                drawImage(imageToUse);
+            } else {
+                imageToUse.onload = () => drawImage(imageToUse);
             }
-        });
+        }
+
+        // Initial setup
+        selectAndDrawImage();
+
+        // Resize and redraw on window resize
+        window.addEventListener('resize', selectAndDrawImage);
     }
 
     // Email Submission
@@ -155,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        setupBackgroundImage(); // Replace particle system with background image
+        setupBackgroundImage();
         setupEmailSubmission();
     }
 
