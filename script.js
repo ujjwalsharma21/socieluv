@@ -25,6 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
+        // Initialize elements if empty or NaN
+        if (!daysElement.textContent || isNaN(parseInt(daysElement.textContent))) {
+            daysElement.textContent = days.toString().padStart(2, '0');
+        }
+        if (!hoursElement.textContent || isNaN(parseInt(hoursElement.textContent))) {
+            hoursElement.textContent = hours.toString().padStart(2, '0');
+        }
+        if (!minutesElement.textContent || isNaN(parseInt(minutesElement.textContent))) {
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+        }
+        if (!secondsElement.textContent || isNaN(parseInt(secondsElement.textContent))) {
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
+        }
+
         animateValue(daysElement, parseInt(daysElement.textContent), days);
         animateValue(hoursElement, parseInt(hoursElement.textContent), hours);
         animateValue(minutesElement, parseInt(minutesElement.textContent), minutes);
@@ -54,23 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const backgroundCanvas = document.getElementById('particle-canvas');
         const ctx = backgroundCanvas.getContext('2d');
 
-        // Create image objects
         const desktopBackgroundImage = new Image();
         const mobileBackgroundImage = new Image();
         
-        // Set image sources
         desktopBackgroundImage.src = 'background.jpg';
         mobileBackgroundImage.src = 'mobile.jpg';
 
-        // Resize canvas to window
         function resizeCanvas() {
             backgroundCanvas.width = window.innerWidth;
             backgroundCanvas.height = window.innerHeight;
         }
 
-        // Draw image function
         function drawImage(image) {
-            // Scale image to cover entire canvas while maintaining aspect ratio
             const scale = Math.max(
                 backgroundCanvas.width / image.width, 
                 backgroundCanvas.height / image.height
@@ -82,29 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = (backgroundCanvas.width - scaledWidth) / 2;
             const centerY = (backgroundCanvas.height - scaledHeight) / 2;
 
-            // Clear previous drawing
             ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
-
-            // Draw the image
-            ctx.drawImage(
-                image, 
-                centerX, 
-                centerY, 
-                scaledWidth, 
-                scaledHeight
-            );
+            ctx.drawImage(image, centerX, centerY, scaledWidth, scaledHeight);
         }
 
-        // Determine which image to use
         function selectAndDrawImage() {
             resizeCanvas();
-            
-            // Specific mobile screen width breakpoint
             const isMobile = window.innerWidth <= 768;
-            
             const imageToUse = isMobile ? mobileBackgroundImage : desktopBackgroundImage;
-            
-            // Wait for image to load before drawing
+
             if (imageToUse.complete) {
                 drawImage(imageToUse);
             } else {
@@ -112,10 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Initial setup
         selectAndDrawImage();
-
-        // Resize and redraw on window resize
         window.addEventListener('resize', selectAndDrawImage);
     }
 
@@ -128,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput.value.trim();
             
             if (validateEmail(email)) {
-                // Simulated submission (replace with actual backend logic)
                 gsap.to(submitBtn, {
                     scale: 1.1,
                     rotation: 360,
