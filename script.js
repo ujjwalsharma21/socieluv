@@ -1,7 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Set countdown to start from 89 days, 0 hours, 1 minute, 0 seconds
-    const launchDate = new Date();
-    launchDate.setTime(launchDate.getTime() + (89 * 24 * 60 * 60 * 1000) + (1 * 60 * 1000));
+document.addEventListener('DOMContentLoaded', async () => {
+    // Fetch the current time from an external API
+    async function fetchCurrentTime() {
+        try {
+            const response = await fetch('http://worldtimeapi.org/api/timezone/Etc/UTC');
+            const data = await response.json();
+            return new Date(data.utc_datetime).getTime();
+        } catch (error) {
+            console.error('Error fetching time:', error);
+            return new Date().getTime(); // Fallback to local time if API fails
+        }
+    }
+
+    // Set countdown target (89 days from now)
+    const countdownDuration = 89 * 24 * 60 * 60 * 1000 + (1 * 60 * 1000); // 89 days + 1 min
+    let launchTimestamp = await fetchCurrentTime() + countdownDuration;
 
     // Get elements
     const daysElement = document.getElementById('days');
@@ -10,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const secondsElement = document.getElementById('seconds');
 
     function updateCountdown() {
-        const now = new Date();
-        const difference = launchDate - now;
+        const now = new Date().getTime();
+        const difference = launchTimestamp - now;
 
         if (difference <= 0) {
             [daysElement, hoursElement, minutesElement, secondsElement].forEach(el => {
@@ -39,11 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function animateValue(element, start, end) {
         if (start === end) return;
 
-        const range = end - start;
-        let current = start;
         const increment = end > start ? 1 : -1;
         const stepTime = 50;
 
+        let current = start;
         const timer = setInterval(() => {
             current += increment;
             element.textContent = current.toString().padStart(2, '0');
@@ -131,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const re = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
     }
 
