@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Set fixed launch date: April 15, 2025, 00:00:00 UTC
-    const launchTimestamp = new Date("2025-04-15T00:00:00Z").getTime();
+    const launchTimestamp = new Date("2025-04-25T00:00:00Z").getTime();
 
     // Get elements
     const daysElement = document.getElementById('days');
