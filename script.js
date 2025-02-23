@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Countdown Initialization
+    // Set countdown to start from 89 days, 0 hours, 1 minute, 0 seconds
     const launchDate = new Date();
-    launchDate.setDate(launchDate.getDate() + 90);
-    launchDate.setHours(0, 0, 0, 0);
+    launchDate.setTime(launchDate.getTime() + (89 * 24 * 60 * 60 * 1000) + (1 * 60 * 1000));
 
+    // Get elements
     const daysElement = document.getElementById('days');
     const hoursElement = document.getElementById('hours');
     const minutesElement = document.getElementById('minutes');
@@ -14,10 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const difference = launchDate - now;
 
         if (difference <= 0) {
-            daysElement.textContent = '00';
-            hoursElement.textContent = '00';
-            minutesElement.textContent = '00';
-            secondsElement.textContent = '00';
+            [daysElement, hoursElement, minutesElement, secondsElement].forEach(el => {
+                el.textContent = '00';
+            });
             return;
         }
 
@@ -26,11 +25,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        // Update the countdown elements
         daysElement.textContent = days.toString().padStart(2, '0');
         hoursElement.textContent = hours.toString().padStart(2, '0');
         minutesElement.textContent = minutes.toString().padStart(2, '0');
         secondsElement.textContent = seconds.toString().padStart(2, '0');
+
+        animateValue(daysElement, parseInt(daysElement.textContent), days);
+        animateValue(hoursElement, parseInt(hoursElement.textContent), hours);
+        animateValue(minutesElement, parseInt(minutesElement.textContent), minutes);
+        animateValue(secondsElement, parseInt(secondsElement.textContent), seconds);
+    }
+
+    function animateValue(element, start, end) {
+        if (start === end) return;
+
+        const range = end - start;
+        let current = start;
+        const increment = end > start ? 1 : -1;
+        const stepTime = 50;
+
+        const timer = setInterval(() => {
+            current += increment;
+            element.textContent = current.toString().padStart(2, '0');
+
+            if (current === end) {
+                clearInterval(timer);
+            }
+        }, stepTime);
     }
 
     // Background Image Setup
@@ -40,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const desktopBackgroundImage = new Image();
         const mobileBackgroundImage = new Image();
-        
+
         desktopBackgroundImage.src = 'background.jpg';
         mobileBackgroundImage.src = 'mobile.jpg';
 
@@ -90,11 +111,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput.value.trim();
             
             if (validateEmail(email)) {
-                alert('🚀 You\'re on the exclusive early access list!');
-                emailInput.value = '';
+                gsap.to(submitBtn, {
+                    scale: 1.1,
+                    rotation: 360,
+                    duration: 0.5,
+                    onComplete: () => {
+                        alert('🚀 You\'re on the exclusive early access list!');
+                        emailInput.value = '';
+                    }
+                });
             } else {
-                emailInput.classList.add('error-shake');
-                setTimeout(() => emailInput.classList.remove('error-shake'), 500);
+                gsap.to(emailInput, {
+                    x: [-10, 10, -10, 10, 0],
+                    duration: 0.3,
+                    ease: 'power1.inOut'
+                });
             }
         });
     }
