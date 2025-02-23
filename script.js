@@ -14,9 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const difference = launchDate - now;
 
         if (difference <= 0) {
-            [daysElement, hoursElement, minutesElement, secondsElement].forEach(el => {
-                el.textContent = '00';
-            });
+            daysElement.textContent = '00';
+            hoursElement.textContent = '00';
+            minutesElement.textContent = '00';
+            secondsElement.textContent = '00';
             return;
         }
 
@@ -25,42 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        // Initialize elements if empty or NaN
-        if (!daysElement.textContent || isNaN(parseInt(daysElement.textContent))) {
-            daysElement.textContent = days.toString().padStart(2, '0');
-        }
-        if (!hoursElement.textContent || isNaN(parseInt(hoursElement.textContent))) {
-            hoursElement.textContent = hours.toString().padStart(2, '0');
-        }
-        if (!minutesElement.textContent || isNaN(parseInt(minutesElement.textContent))) {
-            minutesElement.textContent = minutes.toString().padStart(2, '0');
-        }
-        if (!secondsElement.textContent || isNaN(parseInt(secondsElement.textContent))) {
-            secondsElement.textContent = seconds.toString().padStart(2, '0');
-        }
-
-        animateValue(daysElement, parseInt(daysElement.textContent), days);
-        animateValue(hoursElement, parseInt(hoursElement.textContent), hours);
-        animateValue(minutesElement, parseInt(minutesElement.textContent), minutes);
-        animateValue(secondsElement, parseInt(secondsElement.textContent), seconds);
-    }
-
-    function animateValue(element, start, end) {
-        if (start === end) return;
-        
-        const range = end - start;
-        let current = start;
-        const increment = end > start ? 1 : -1;
-        const stepTime = 50;
-
-        const timer = setInterval(() => {
-            current += increment;
-            element.textContent = current.toString().padStart(2, '0');
-            
-            if (current === end) {
-                clearInterval(timer);
-            }
-        }, stepTime);
+        // Update the countdown elements
+        daysElement.textContent = days.toString().padStart(2, '0');
+        hoursElement.textContent = hours.toString().padStart(2, '0');
+        minutesElement.textContent = minutes.toString().padStart(2, '0');
+        secondsElement.textContent = seconds.toString().padStart(2, '0');
     }
 
     // Background Image Setup
@@ -120,21 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput.value.trim();
             
             if (validateEmail(email)) {
-                gsap.to(submitBtn, {
-                    scale: 1.1,
-                    rotation: 360,
-                    duration: 0.5,
-                    onComplete: () => {
-                        alert('🚀 You\'re on the exclusive early access list!');
-                        emailInput.value = '';
-                    }
-                });
+                alert('🚀 You\'re on the exclusive early access list!');
+                emailInput.value = '';
             } else {
-                gsap.to(emailInput, {
-                    x: [-10, 10, -10, 10, 0],
-                    duration: 0.3,
-                    ease: 'power1.inOut'
-                });
+                emailInput.classList.add('error-shake');
+                setTimeout(() => emailInput.classList.remove('error-shake'), 500);
             }
         });
     }
