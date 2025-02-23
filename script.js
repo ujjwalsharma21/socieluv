@@ -11,9 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Set countdown target (89 days from now)
-    const countdownDuration = 89 * 24 * 60 * 60 * 1000 + (1 * 60 * 1000); // 89 days + 1 min
-    let launchTimestamp = await fetchCurrentTime() + countdownDuration;
+    // Set fixed launch date: April 15, 2025, 00:00:00 UTC
+    const launchTimestamp = new Date("2025-04-15T00:00:00Z").getTime();
 
     // Get elements
     const daysElement = document.getElementById('days');
@@ -21,8 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const minutesElement = document.getElementById('minutes');
     const secondsElement = document.getElementById('seconds');
 
-    function updateCountdown() {
-        const now = new Date().getTime();
+    async function updateCountdown() {
+        const now = await fetchCurrentTime();
         const difference = launchTimestamp - now;
 
         if (difference <= 0) {
@@ -41,28 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         hoursElement.textContent = hours.toString().padStart(2, '0');
         minutesElement.textContent = minutes.toString().padStart(2, '0');
         secondsElement.textContent = seconds.toString().padStart(2, '0');
-
-        animateValue(daysElement, parseInt(daysElement.textContent), days);
-        animateValue(hoursElement, parseInt(hoursElement.textContent), hours);
-        animateValue(minutesElement, parseInt(minutesElement.textContent), minutes);
-        animateValue(secondsElement, parseInt(secondsElement.textContent), seconds);
-    }
-
-    function animateValue(element, start, end) {
-        if (start === end) return;
-
-        const increment = end > start ? 1 : -1;
-        const stepTime = 50;
-
-        let current = start;
-        const timer = setInterval(() => {
-            current += increment;
-            element.textContent = current.toString().padStart(2, '0');
-
-            if (current === end) {
-                clearInterval(timer);
-            }
-        }, stepTime);
     }
 
     // Background Image Setup
@@ -142,13 +119,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
     }
 
     // Initialize all functions
-    function init() {
-        updateCountdown();
+    async function init() {
+        await updateCountdown();
         setInterval(updateCountdown, 1000);
         setupBackgroundImage();
         setupEmailSubmission();
